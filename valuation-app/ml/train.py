@@ -15,9 +15,9 @@ PARAMS = dict(objective="regression_l1", learning_rate=0.04, num_leaves=31, min_
               feature_fraction=0.8, bagging_fraction=0.8, bagging_freq=1, lambda_l2=1.0, verbose=-1)
 
 
-def train(paths):
+def train(paths, months=24):
     ART_DIR.mkdir(exist_ok=True, parents=True)
-    df = add_basic(load_sold(paths))
+    df = add_basic(load_sold(paths, months))
     df["segment"] = df["prop_type"].map(segment_of)
     macro = load_macro()
     df = df.merge(macro[["month", "boc_rate", "rate_chg3", "news_idx"]], on="month", how="left") \
@@ -110,4 +110,8 @@ def dom_table(te: pd.DataFrame, pred_log):
 
 
 if __name__ == "__main__":
-    train(sys.argv[1:])
+    args = sys.argv[1:]
+    months = 24
+    if "--months" in args:
+        i = args.index("--months"); months = int(args[i + 1]); del args[i:i + 2]
+    train(args, months)
