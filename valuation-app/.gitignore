@@ -1,0 +1,6 @@
+data/*.csv
+artifacts/
+*.db
+__pycache__/
+node_modules/
+.env
